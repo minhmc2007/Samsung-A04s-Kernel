@@ -9,7 +9,7 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-22.04 # Ubuntu 22.04 is commonly used for kernel builds
+    runs-on: ubuntu-22.04
 
     steps:
       # Checkout the repository
@@ -48,20 +48,12 @@ jobs:
             libarchive-tools \
             zstd
 
-      # Set up environment variables (adjust as needed)
+      # Set up environment variables
       - name: Setup Build Environment
         run: |
           echo "ARCH=arm64" >> $GITHUB_ENV
           echo "CROSS_COMPILE=aarch64-linux-gnu-" >> $GITHUB_ENV
           echo "CC=clang" >> $GITHUB_ENV
-
-      # Install a compatible toolchain (example: AOSP Clang)
-      - name: Install Toolchain
-        run: |
-          wget https://android.googlesource.com/platform/prebuilts/clang/host/linux-x86/+archive/refs/heads/master/clang-r450784e.tar.gz
-          mkdir -p toolchain/clang
-          tar -xzf clang-r450784e.tar.gz -C toolchain/clang
-          echo "PATH=$PWD/toolchain/clang/bin:$PATH" >> $GITHUB_ENV
 
       # Run the build_kernel.sh script
       - name: Build Kernel
@@ -74,7 +66,7 @@ jobs:
             exit 1
           fi
 
-      # Upload build artifacts (e.g., kernel image, modules)
+      # Upload build artifacts
       - name: Upload Artifacts
         uses: actions/upload-artifact@v4
         with:
